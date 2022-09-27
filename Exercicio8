@@ -1,0 +1,140 @@
+package exercicio8;
+
+import java.util.ArrayList;
+
+public class Aluno {
+    public String nomeCompleto;
+    public String matricula;
+    public ArrayList<Nota> notas;
+
+    public Aluno(String nomeCompleto, String matricula, ArrayList<Nota> notas) {
+        this.nomeCompleto = nomeCompleto;
+        this.matricula = matricula;
+        this.notas = notas;
+
+        if (!IsNameValid()) {
+            System.out.println("Nome invalido");
+            System.exit(1);
+        }
+        if (!IsMatriculaValid()) {
+            System.out.println("Matrícula invalido");
+            System.exit(1);
+        }
+        if (!IsNotasValid()) {
+            System.out.println("Notas invalidas");
+            System.exit(1);
+        }
+    }
+
+    public boolean IsNameValid() {
+        return nomeCompleto.split(" ").length >= 2 && nomeCompleto.length() < 50;
+    }
+
+    public boolean IsMatriculaValid() {
+        return matricula.length() == 8 && matricula.startsWith("201");
+    }
+
+    public boolean IsNotasValid() {
+        return notas.size() == 5;
+    }
+
+    public void descarteNotaMenor() {
+        int indiceDaMenorNota = 0;
+        for (int i = 0; i < notas.size(); i++) {
+            if (notas.get(i).valor < notas.get(1).valor)
+                indiceDaMenorNota = i;
+        }
+        notas.remove(indiceDaMenorNota);
+    }
+
+    public double getNotaSemestral() {
+        descarteNotaMenor();
+        double soma = 0;
+        for (Nota nota : notas) {
+            soma += nota.valor;
+        }
+        return soma / 4;
+    }
+
+    public double getNotaFinal() {
+        double notaSemestral = getNotaSemestral();
+
+        if (notaSemestral < 6) {
+            notaSemestral -= (notaSemestral * 0.25);
+        } else if (notaSemestral >= 6 && notaSemestral <= 7) {
+            notaSemestral = 7;
+        } else if (notaSemestral >= 7 && notaSemestral <= 8) {
+            notaSemestral += (notaSemestral * 0.15);
+        } else {
+            notaSemestral = 10;
+        }
+        return notaSemestral;
+    }
+
+    @Override
+    public String toString() {
+        String notasFormatadas = "";
+        for (Nota nota : notas) {
+            notasFormatadas += nota + "\n";
+        }
+
+        return String.format("Matrícula: %s\nNome completo: %s\nNotas formatadas: %s\nNota semestral: %s\nNota final: %s\n", matricula, nomeCompleto,
+                notasFormatadas, getNotaSemestral(), getNotaFinal());
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+package exercicio8;
+
+import java.util.ArrayList;
+
+public class Exercicio8 {
+    public static void main(String[] args) { 
+        ArrayList<Nota> notas = new ArrayList<>();
+        notas.add(new Nota(10, "Física"));
+        notas.add(new Nota(8, "POO"));
+        notas.add(new Nota(7, "Química"));
+        notas.add(new Nota(6, "Algébra Linear"));
+        notas.add(new Nota(8, "Cálculo 2"));
+
+        Aluno aluno = new Aluno("João Cândido", "20152020", notas);
+        System.out.println(aluno);
+    }    
+}
+
+-------------------------------------------------------------------------------------------------------
+
+package exercicio8;
+
+public class Nota {
+    public double valor;
+    public String nomeDoAssunto;
+
+    public Nota(double valor, String nomeDoAssunto) {
+        this.valor = valor;
+        this.nomeDoAssunto = nomeDoAssunto;
+
+        if(!IsNotaValid()) {
+            System.out.println("Nota invalida");
+            System.exit(1);
+        }
+        if(!isNomeDoAssuntoValid()) {
+            System.out.println("Nome do assunto invalido");
+            System.exit(1);
+        }
+    }
+
+    public boolean IsNotaValid() {
+        return valor >= 0 && valor <= 10;
+    }
+
+    public boolean isNomeDoAssuntoValid() {
+        return nomeDoAssunto.length() != 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %f", nomeDoAssunto, valor);
+    }
+}
